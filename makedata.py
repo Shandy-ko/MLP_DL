@@ -21,9 +21,14 @@ def main():
   np.random.shuffle(dataset)
 
   x, d=dataset[:,:2], dataset[:,2]
-  w, b=np.random.rand(m), np.random.random
+  w, b=np.random.rand(m), np.random.random()
   print("x=%s"%x)
   print("--------------")
   print("d=%s"%d)
+  print("--------------")
+  print("w=%s"%w)
+  print("--------------")
+  print("b=%s"%b)
+  return x,d,w,b
 
 main()
