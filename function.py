@@ -42,7 +42,29 @@ def grad(x,d,w,b):
   return w_grad, b_grad
 
 
-def SGD(x, d, w, b, e, eta=0.10, iteration=5, minibatch_size=10):
+def GD(x,d,w,b,e, eta=0.10, iteration=700):
+  '''
+  Function: GD
+  Summary: 勾配法
+  Attributes:
+      @param (x):データ
+      @param (d):ラベル
+      @param (w):重み
+      @param (b):バイアス
+      @param (e):誤差を保存
+      @param (eta) default=0.10: 学習係数
+      @param (iteration) default=700: イテレーション
+  Returns: 誤差，重み，バイアス
+  '''
+  for _ in range(iteration):
+    w_grad, b_grad = grad(x,d,w,b)
+    w -= eta*w_grad
+    b -= eta*b_grad
+    e.append(np.mean(np.abs(d-p_y_given_x(x,w,b))))
+  return e,w,b
+
+
+def SGD(x,d,w,b,e, eta=0.10, iteration=5, minibatch_size=10):
     '''
     Function: SGD
     Summary: 確率的勾配法 + ミニバッチ
@@ -55,15 +77,15 @@ def SGD(x, d, w, b, e, eta=0.10, iteration=5, minibatch_size=10):
         @param (eta) default=0.10: 学習係数
         @param (iteration) default=5: イテレーション
         @param (minibatch_size) default=10: ミニバッチのサイズ
-    Returns: 誤差, 重み, バイアス
+    Returns: 誤差，重み，バイアス
     '''
     for _ in range(iteration):
         for index in range(0, x.shape[0], minibatch_size):
-            _x = x[index:index + minibatch_size]
-            _d = d[index:index + minibatch_size]
-            w_grad, b_grad = grad(_x, _d, w, b)
-            w -= eta * w_grad
-            b -= eta * b_grad
-            e.append(np.mean(np.abs(d - p_y_given_x(x, w, b))))
+            _x = x[index:index+minibatch_size]
+            _d = d[index:index+minibatch_size]
+            w_grad, b_grad = grad(_x,_d,w,b)
+            w -= eta*w_grad
+            b -= eta*b_grad
+            e.append(np.mean(np.abs(d-p_y_given_x(x, w, b))))
             #absolute Calculate the absolute value element-wise.
     return e, w, b
