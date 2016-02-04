@@ -1,70 +1,73 @@
-# coding: utf-8
+# coding:utf-8
 import numpy as np
-import makedata as md
-def p_y_given_x(x,w,b):
+import matplotlib.pyplot as plt
+import function as func
+
+def main():
   '''
-  Function: p_y_given_x
-  Summary: 写像
-  Attributes:
-    @param (x): データ
-    @param (w): 重み
-    @param (b): バイアス
-  Return: 写像後の値
+  Function: main
+  Summary: メイン関数
   '''
 
-  def sigmoid(u):
-    return 1./(1.+np.exp(-u))
+  m, N=2, 10
+  x1, x2=np.random.randn(N,m), np.random.randn(N,m)+np.array([5,5])
+  #randn 標準正規分布による (N * m) の行列
+  x=np.vstack((x1,x2))
+  #vstack Stack arrays in sequence vertically (row wise).
+  d1, d2=np.zeros(N), np.ones(N)
+  #zeros Return a new array of given shape and type, filled with zeros.
+  #ones Return a new array of given shape and type, filled with ones.
+  d=np.hstack((d1,d2))
+  #hstack Stack arrays in sequence horizontally (column wise).
+  dataset=np.column_stack((x,d))
+  #colomn_stack Stack arrays in sequence horizontally (column wise), just like with hstack.
+  np.random.shuffle(dataset)
+  print("dataset=\n%s"%dataset)
 
-  print sigmoid(np.dot(x,w)+b)
-  #dot Dot product of two arrays.
-
-
-def grad(x,d,w,b):
-  '''
-  Function: grad
-  Summary: 勾配の計算
-  Attributes:
-    @param (x): データ
-    @param (d): ラベル
-    @param (w): 重み
-    @param (b): バイアス
-  Return: 重みの勾配の平均，バイアスの勾配の平均
-  '''
-  error = d-p_y_given_x(x,w,b)
-  w_grad = -np.mean(x.T*error, axis=1)
-  b_grad = -np.mean(error)
+  x, d=dataset[:,:2], dataset[:,2]
+  w, b=np.random.rand(m), np.random.random()
+  print("x=%s"%x)
   print("--------------")
-  print("w_grad=%s"%w_grad)
+  print("d1=%s"%d1)
   print("--------------")
-  print("b_grad=%s"%b_grad)
-  return w_grad, b_grad
+  print("d2=%s"%d2)
+  print("--------------")
+  print("d=%s"%d)
+  print("--------------")
+  print("w=%s"%w)
+  print("--------------")
+  print("b=%s"%b)
+  # e, w, b = func.GD(x, d, w, b, list())
+  e, w, b = func.SGD(x, d, w, b, list())
+  # e, w, b = func.SGD_momentum(x, d, w, b, list())
+  # e, w, b = func.SGD_adagrad(x, d, w, b, list())
+  plot(x, d, x1, x2, e, w, b)
 
-x,d,w,b=md.main()
-grad(x,d,w,b)
+def plot(x,d,x1,x2,e,w,b):
+  '''
+  Function: plot
+  Summary: 描画
+  Attributes:
+      @param (x):データ
+      @param (d):ラベル
+      @param (x1):グループgのデータ
+      @param (x2):グループrのデータ
+      @param (e):誤差
+      @param (w):重み
+      @param (b):バイアス
+  '''
+  print np.mean(np.abs(d-func.p_y_given_x(x,w,b)))
+    #mean average
+  # plt.plot(e)
+  # plt.show()
+  # bx=np.arange(-6,10,0.1)
+  # by= -b/w[1] - w[0]/[1]*bx
+  # plt.xlim([-5,10])
+  # plt.ylim([-5,9])
+  # plt.plot(bx,by)
+  # plt.scatter(x1[:,0],x1[:,1],c='g')
+  # plt.scatter(x1[:,0],x1[:,1],c='r')
+  # plt.show
 
-
-
-def SGD(x, d, w, b, e, eta=0.10, iteration=5, minibatch_size=10):
-    '''
-    Function: SGD
-    Summary: 確率的勾配法 + ミニバッチ
-    Attributes:
-        @param (x):データ
-        @param (d):ラベル
-        @param (w):重み
-        @param (b):バイアス
-        @param (e):誤差を保存
-        @param (eta) default=0.10: 学習係数
-        @param (iteration) default=5: イテレーション
-        @param (minibatch_size) default=10: ミニバッチのサイズ
-    Returns: 誤差, 重み, バイアス
-    '''
-    for _ in range(iteration):
-        for index in range(0, x.shape[0], minibatch_size):
-            _x = x[index:index + minibatch_size]
-            _d = d[index:index + minibatch_size]
-            w_grad, b_grad = grad(_x, _d, w, b)
-            w -= eta * w_grad
-            b -= eta * b_grad
-            e.append(np.mean(np.abs(d - p_y_given_x(x, w, b))))
-    return e, w, b
+if __name__=="__main__":
+  main()
