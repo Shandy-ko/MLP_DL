@@ -15,6 +15,13 @@ def p_y_given_x(x,w,b):
   def sigmoid(u):
     return 1./(1.+np.exp(-u))
 
+  # print("x=%s"%x)
+  # print("w=%s"%w)
+  # print("b=%s"%b)
+  # print("np.dot(x,w)=%s"%np.dot(x,w))
+  # i=np.dot(x,w)+b
+  # print("np.dot(x,w)+b=%s"%i)
+  # print("sigmoid=%s"%sigmoid(np.dot(x,w)+b))
   return sigmoid(np.dot(x,w)+b)
   #dot Dot product of two arrays.
 
@@ -31,8 +38,14 @@ def grad(x,d,w,b):
   Return: 重みの勾配の平均，バイアスの勾配の平均
   '''
   error = d-p_y_given_x(x,w,b)
+  # print("x=%s"%x)
+  # print("d=%s"%d)
+  # print("error=%s"%error)
+  # print("x.T=%s"%x.T)
+  # i=x.T*error
+  # print("x.T*error=%s"%i)
   w_grad = -np.mean(x.T*error, axis=1)
-  #mean Compute the arithmetic mean along the specified axis.
+  #mean Compute the arithmetic mean along the specified axis.,average
   #.T transpose()
   b_grad = -np.mean(error)
   # print("--------------")
@@ -61,6 +74,7 @@ def GD(x,d,w,b,e, eta=0.10, iteration=700):
     w -= eta*w_grad
     b -= eta*b_grad
     e.append(np.mean(np.abs(d-p_y_given_x(x,w,b))))
+    #abs 絶対値
   return e,w,b
 
 

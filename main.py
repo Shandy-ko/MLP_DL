@@ -24,7 +24,7 @@ def main():
   d=np.hstack((d1,d2))
   #hstack Stack arrays in sequence horizontally (column wise).
   dataset=np.column_stack((x,d))
-  print("dataset=\n%s"%dataset)
+  # print("dataset=\n%s"%dataset)
   #colomn_stack Stack arrays in sequence horizontally (column wise), just like with hstack.
   np.random.shuffle(dataset)
   # print("dataset=\n%s"%dataset)
@@ -43,7 +43,7 @@ def main():
   # print("--------------")
   # print("b=%s"%b)
   e, w, b = func.GD(x, d, w, b, list())
-  e, w, b = func.SGD(x, d, w, b, list())
+  # e, w, b = func.SGD(x, d, w, b, list())
   # e, w, b = func.SGD_momentum(x, d, w, b, list())
   # e, w, b = func.SGD_adagrad(x, d, w, b, list())
   plot(x, d, x1, x2, e, w, b)
