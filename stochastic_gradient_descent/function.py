@@ -103,3 +103,42 @@ def SGD(x,d,w,b,e, eta=0.10, iteration=5, minibatch_size=10):
             e.append(np.mean(np.abs(d-p_y_given_x(x, w, b))))
             #absolute Calculate the absolute value element-wise.
     return e, w, b
+
+
+def SGD_momentum(x, d, w, b, e, eta=0.10, mu=0.65, iteration=50, minibatch_size=10):
+    '''
+    Function: SGD_momentum
+    Summary: 確率的勾配法 + ミニバッチ + モメンタム
+    Attributes:
+        @param (x):データ
+        @param (d):ラベル
+        @param (w):重み
+        @param (b):バイアス
+        @param (e):誤差を保存
+        @param (eta) default=0.10: 誤差を保存
+        @param (mu) default=0.65: 係数
+        @param (iteration) default=50: イテレーション
+        @param (minibatch_size) default=10: ミニバッチのサイズ
+    Returns: 誤差, 重み, バイアス
+    '''
+    wlist, blist = [w], [b]
+    def momentum(mu, list):
+        return mu * (list[1] - list[0])
+    for _ in range(iteration):
+        for index in range(0, x.shape[0], minibatch_size):
+            _x = x[index:index + minibatch_size]
+            _d = d[index:index + minibatch_size]
+            w_grad, b_grad = grad(_x, _d, w, b)
+
+            if len(wlist) > 1:
+                w -= eta * w_grad + momentum(mu, wlist)
+                b -= eta * b_grad + momentum(mu, blist)
+                wlist.pop(0)
+                blist.pop(0)
+            else:
+                w -= eta * w_grad
+                b -= eta * b_grad
+            wlist.append(w)
+            blist.append(b)
+            e.append(np.mean(np.abs(d - p_y_given_x(x, w, b))))
+    return e, w, b
