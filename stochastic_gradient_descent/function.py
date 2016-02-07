@@ -142,3 +142,32 @@ def SGD_momentum(x, d, w, b, e, eta=0.10, mu=0.65, iteration=50, minibatch_size=
             blist.append(b)
             e.append(np.mean(np.abs(d - p_y_given_x(x, w, b))))
     return e, w, b
+
+def SGD_adagrad(x, d, w, b, e, eta=0.10, iteration=50, minibatch_size=10):
+    '''
+    Function: SGD_adagrad
+    Summary: 確率的勾配法 + ミニバッチ + アダグラッド
+    Attributes:
+        @param (x):データ
+        @param (d):ラベル
+        @param (w):重み
+        @param (b):バイアス
+        @param (e):誤差を保存
+        @param (eta) default=0.10: 学習係数
+        @param (iteration) default=50: イテレーション
+        @param (minibatch_size) default=10: ミニバッチのサイズ
+    Returns: 誤差, 重み, バイアス
+    '''
+    wgrad2sum = np.zeros(x.shape[1])
+    bgrad2sum = 0
+    for _ in range(iteration):
+        for index in range(0, x.shape[0], minibatch_size):
+            _x = x[index:index + minibatch_size]
+            _d = d[index:index + minibatch_size]
+            w_grad, b_grad = grad(_x, _d, w, b)
+            wgrad2sum += np.power(w_grad, 2)
+            bgrad2sum += np.power(b_grad, 2)
+            w -= (eta/np.sqrt(wgrad2sum)) * w_grad
+            b -= (eta/np.sqrt(bgrad2sum)) * b_grad
+            e.append(np.mean(np.abs(d - p_y_given_x(x, w, b))))
+    return e, w, b
