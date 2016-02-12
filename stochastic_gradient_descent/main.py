@@ -44,8 +44,8 @@ def main():
   # print("b=%s"%b)
   # e, w, b = func.GD(x, d, w, b, list())
   # e, w, b = func.SGD(x, d, w, b, list())
-  # e, w, b = func.SGD_momentum(x, d, w, b, list())
-  e, w, b = func.SGD_adagrad(x, d, w, b, list())
+  e, w, b = func.SGD_momentum(x, d, w, b, list())
+  # e, w, b = func.SGD_adagrad(x, d, w, b, list())
   plot(x, d, x1, x2, e, w, b)
 
 def plot(x,d,x1,x2,e,w,b):
